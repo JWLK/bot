@@ -15,6 +15,9 @@ auth_phone  = { ["821012341234"] = true }
 -- 로그인 한 ID를 저장하는 변수
 our_id = 0
 
+-- Shell Mode FLAG
+shell_flag = 0
+
 bot_path        = "/home/pi/tg/bot/"
 shell_path      = "/home/pi/tg/bot/shell/"
 temp_path       = "/home/pi/tg/bot/tmp/"
@@ -30,6 +33,8 @@ require( "bot/recv_file" )   -- Telegram CLI가 수신 받는 '파일'을 처리
 require( "bot/torrent" )     -- Torrent 관련 기능 스크립트
 require( "bot/wol" )         -- WOL 관련 기능 스크립트
 require ( "bot/resistorcalc" ) -- 저항 띄 색깔 계산기
+require( "bot/shell" )          -- Shell Mode 스크립트
+
 require ( "bot/basicchat" ) -- 일반적인 대화 
 require ( "bot/food" ) -- 학식 
 require ( "bot/bus" )
@@ -67,7 +72,9 @@ function msg_processing(user_id, cmd, arg)
     -- 저항값 계산기어
     elseif ( cmd == "저항" )         then    CalcResistorColor(user_id, arg)
     elseif ( cmd == '명령어' )      then    SendHelp(user_id)                 -- 사용 방법 Text 파일 전송
-
+    elseif ( cmd == "쉘모드" )     then    shell_flag = 1; send_msg(user_id, "쉘모드 활성화", ok_cb, false)
+    elseif ( cmd == "쉘모드종료" )   then    shell_flag = 0; send_msg(user_id, "쉘모드 비활성화", ok_cb, false)
+    elseif ( shell_flag == 1 )      then    print("Shell Mode")
     elseif ( cmd == '시스템' )        then    SendSystemInfo(user_id)
     elseif ( cmd == '설명' )        then 	intro(user_id)
 
@@ -218,10 +225,12 @@ function msg_processing(user_id, cmd, arg)
         AddMagnetLink(user_id, cmd)
     end
 
+    if ( shell_flag == 1 ) then
+        print("shell flag is true")
+        ShellMode(user_id, cmd, arg)
+    end
+
 end
-
-
-
 
 
 

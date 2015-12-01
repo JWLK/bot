@@ -1,4 +1,4 @@
 CPU Usage  : 
 CPU temp   : 
-Memory Use : 759MB/992MB (76.51%)
+Memory Use : 628MB/992MB (63.31%)
 Disk Info  : 
